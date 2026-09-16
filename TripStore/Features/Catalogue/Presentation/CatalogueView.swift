@@ -27,8 +27,10 @@ struct CatalogueView: View {
         case .loaded:
             List {
                 ForEach(viewModel.products) { product in
-                    ProductRowView(product: product)
-                        .onAppear { Task { await viewModel.loadMore(currentItem: product) } }
+                    NavigationLink(destination: ProductDetailView(product: product)) {
+                        ProductRowView(product: product)
+                            .onAppear { Task { await viewModel.loadMore(currentItem: product) } }
+                    }
                 }
             }
             .refreshable { await viewModel.refresh() }
