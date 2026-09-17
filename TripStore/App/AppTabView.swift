@@ -7,6 +7,9 @@ struct AppTabView: View {
         TabView {
             CatalogueView(repository: container.productRepository)
                 .tabItem { Label("Catalogue", systemImage: "magnifyingglass") }
+            
+            FavouritesView()
+                .tabItem { Label("Favourites", systemImage: "heart.fill") }
         }
     }
 }
