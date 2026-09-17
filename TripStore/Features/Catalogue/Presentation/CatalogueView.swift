@@ -9,10 +9,7 @@ struct CatalogueView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                if viewModel.isShowingStaleData { StaleBanner() }
-                content
-            }
+            content
             .navigationTitle("TripStore")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -45,6 +42,11 @@ struct CatalogueView: View {
         case .error(let msg): ErrorView(message: msg, retryAction: { Task { await viewModel.refresh() } })
         case .loaded:
             List {
+                if viewModel.isShowingStaleData {
+                    StaleBanner()
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
                 ForEach(viewModel.products) { product in
                     NavigationLink(destination: ProductDetailView(product: product)) {
                         ProductRowView(product: product)

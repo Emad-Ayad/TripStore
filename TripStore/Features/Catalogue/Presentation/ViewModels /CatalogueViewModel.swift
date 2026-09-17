@@ -75,7 +75,9 @@ final class CatalogueViewModel: ObservableObject {
         if reset {
             skip = 0
             hasMore = true
-            state = .loading
+            if products.isEmpty {
+                state = .loading
+            }
         }
         
         do {
