@@ -1,17 +1,19 @@
-//
-//  TripStoreApp.swift
-//  TripStore
-//
-//  Created by TaqieAllah on 15/09/2026.
-//
-
 import SwiftUI
 
 @main
 struct TripStoreApp: App {
+    @StateObject private var container = DependencyContainer()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppTabView()
+                .environmentObject(container)
+                .environmentObject(container.favouritesManager)
+                .environmentObject(container.orderViewModel)
+                .task {
+                    await container.favouritesManager.load()
+                    await container.orderViewModel.load()
+                }
         }
     }
 }
