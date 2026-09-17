@@ -6,7 +6,10 @@ struct TripStoreApp: App {
     
     var body: some Scene {
         WindowGroup {
-            AppTabView().environmentObject(container)
+            AppTabView()
+                .environmentObject(container)
+                .environmentObject(container.favouritesManager)
+                .task { await container.favouritesManager.load() }
         }
     }
 }

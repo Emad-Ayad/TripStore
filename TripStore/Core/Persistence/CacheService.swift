@@ -14,12 +14,14 @@ actor CacheService {
     
     func save<T: Codable>(_ data: T, forKey key: String) {
         let entry = CacheEntry(data: data, timestamp: Date())
-        let url = cacheDir.appendingPathComponent("\(key.hashValue).json")
+        let safeKey = Data(key.utf8).base64EncodedString().replacingOccurrences(of: "/", with: "_")
+        let url = cacheDir.appendingPathComponent("\(safeKey).json")
         try? JSONEncoder().encode(entry).write(to: url, options: .atomic)
     }
     
     func load<T: Codable>(forKey key: String) -> (data: T, isStale: Bool)? {
-        let url = cacheDir.appendingPathComponent("\(key.hashValue).json")
+        let safeKey = Data(key.utf8).base64EncodedString().replacingOccurrences(of: "/", with: "_")
+        let url = cacheDir.appendingPathComponent("\(safeKey).json")
         guard let data = try? Data(contentsOf: url),
               let entry = try? JSONDecoder().decode(CacheEntry<T>.self, from: data) else { return nil }
         let isStale = Date().timeIntervalSince(entry.timestamp) > 300

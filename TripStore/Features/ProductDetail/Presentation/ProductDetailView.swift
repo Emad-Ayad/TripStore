@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProductDetailView: View {
     let product: Product
+    @EnvironmentObject var favouritesManager: FavouritesManager
     
     var body: some View {
         ScrollView {
@@ -18,11 +19,9 @@ struct ProductDetailView: View {
                             .font(.title2)
                             .fontWeight(.bold)
                         Spacer()
-                        Button(action: {
-                            // TODO: favourite
-                        }) {
-                            Image(systemName: "heart")
-                                .foregroundColor(.secondary)
+                        Button(action: { favouritesManager.toggleFavourite(product: product) }) {
+                            Image(systemName: favouritesManager.isFavourite(id: product.id) ? "heart.fill" : "heart")
+                                .foregroundColor(favouritesManager.isFavourite(id: product.id) ? .red : .secondary)
                                 .imageScale(.large)
                         }
                     }
