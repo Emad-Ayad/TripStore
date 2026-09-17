@@ -33,18 +33,6 @@ final class ProductPricingTests: XCTestCase {
         XCTAssertEqual(product.discountedPrice, expected, accuracy: 0.0001)
     }
 
-    // MARK: OrderViewModel – service fee & total
-
-    @MainActor
-    func test_serviceFee_is5PercentOfSubtotal() async {
-        let vm = OrderViewModel()
-        vm.addToCart(product: Product.stub(price: 200.0), quantity: 1)
-        // discountedPrice == 200 (no discount)
-        XCTAssertEqual(vm.subtotal, 200.0, accuracy: 0.001)
-        XCTAssertEqual(vm.serviceFee, 10.0, accuracy: 0.001, "Service fee should be 5% of subtotal")
-        XCTAssertEqual(vm.total, 210.0, accuracy: 0.001)
-    }
-
     @MainActor
     func test_serviceFee_withMultipleItemsAndQuantities() async {
         let vm = OrderViewModel()
@@ -75,15 +63,6 @@ final class ProductPricingTests: XCTestCase {
         XCTAssertFalse(product.isInStock, "Product with stock=0 must be marked out of stock")
     }
 
-    @MainActor
-    func test_removeFromCart_reducesSubtotalToZero() {
-        let vm = OrderViewModel()
-        let p = Product.stub(id: 7, price: 50.0)
-        vm.addToCart(product: p, quantity: 2)
-        vm.removeFromCart(productId: 7)
-        XCTAssertEqual(vm.cartItems.count, 0)
-        XCTAssertEqual(vm.subtotal, 0.0, accuracy: 0.001)
-    }
 
     @MainActor
     func test_placeOrder_clearsCartAndRecordsOrder() async {

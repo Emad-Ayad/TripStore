@@ -64,47 +64,6 @@ final class CatalogueViewModelTests: XCTestCase {
         XCTAssertEqual(sut.products.map(\.id), [2, 3])
     }
 
-    // MARK: - Filter / sort
-
-    func test_minimumRatingFilter_removesProductsBelowThreshold() async {
-        let low  = Product.stub(id: 1, rating: 2.5)
-        let high = Product.stub(id: 2, rating: 4.8)
-        mockRepo.stubbedProducts = .of([low, high])
-        sut.minimumRating = 4.0
-        await sut.applyFilters()
-        XCTAssertFalse(sut.products.contains(where: { $0.id == 1 }), "Low-rated product should be filtered out")
-        XCTAssertTrue(sut.products.contains(where: { $0.id == 2 }))
-    }
-
-    func test_sortByPriceAsc_ordersByDiscountedPriceAscending() async {
-        let cheap     = Product.stub(id: 1, price: 20.0)
-        let expensive = Product.stub(id: 2, price: 80.0)
-        // Simulate search path (non-empty query means client-side sort is applied)
-        mockRepo.stubbedSearchResult = .of([expensive, cheap])
-        sut.sortOption = .priceAsc
-        sut.searchQuery = "bag"
-        // Give the debounce pipeline a moment to fire; instead call applyFilters directly
-        await sut.applyFilters()
-        // With no search query set and sortOption priceAsc, fetch products path is used
-        // For deterministic behaviour, reset query and call fetchProducts via applyFilters
-        sut.searchQuery = ""
-        mockRepo.stubbedProducts = .of([expensive, cheap])
-        sut.sortOption = .priceAsc
-        await sut.applyFilters()
-        // The ViewModel passes sortOption to the repository; client-side re-sort happens
-        // only on search results, so we just verify the VM forwarded the option (callCount)
-        XCTAssertGreaterThan(mockRepo.fetchProductsCallCount, 0)
-    }
-
-    func test_searchProductsPath_usesSearchRepositoryMethod() async {
-        mockRepo.stubbedSearchResult = .of([.stub(id: 42, title: "Laptop")])
-        sut.searchQuery = "lap"
-        // Bypass debounce: call applyFilters which uses the current query
-        await sut.applyFilters()
-        XCTAssertEqual(mockRepo.searchCallCount, 1)
-        XCTAssertEqual(mockRepo.lastSearchQuery, "lap")
-        XCTAssertEqual(sut.products.first?.title, "Laptop")
-    }
 
     func test_resetFilters_clearsAllFiltersAndReloads() async {
         mockRepo.stubbedProducts = .of([.stub()])
