@@ -3,6 +3,7 @@ import SwiftUI
 struct ProductDetailView: View {
     let product: Product
     @EnvironmentObject var favouritesManager: FavouritesManager
+    @EnvironmentObject var orderViewModel: OrderViewModel
     
     var body: some View {
         ScrollView {
@@ -76,9 +77,9 @@ struct ProductDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             Button(action: {
-                // TODO: Order product
+                orderViewModel.addToCart(product: product)
             }) {
-                Text("Order Now")
+                Text("Add to Cart")
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

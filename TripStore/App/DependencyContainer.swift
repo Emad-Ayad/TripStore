@@ -8,6 +8,7 @@ final class DependencyContainer: ObservableObject {
     let productRepository: ProductRepositoryProtocol
     let favouriteRepository: FavouriteRepositoryProtocol
     let favouritesManager: FavouritesManager
+    let orderViewModel: OrderViewModel
     
     init() {
         self.networkService = NetworkService()
@@ -15,5 +16,6 @@ final class DependencyContainer: ObservableObject {
         self.productRepository = ProductRepository(networkService: networkService, cacheService: cacheService)
         self.favouriteRepository = FavouriteRepository()
         self.favouritesManager = FavouritesManager(repository: favouriteRepository)
+        self.orderViewModel = OrderViewModel()
     }
 }

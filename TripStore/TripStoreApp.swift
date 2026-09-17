@@ -9,7 +9,11 @@ struct TripStoreApp: App {
             AppTabView()
                 .environmentObject(container)
                 .environmentObject(container.favouritesManager)
-                .task { await container.favouritesManager.load() }
+                .environmentObject(container.orderViewModel)
+                .task {
+                    await container.favouritesManager.load()
+                    await container.orderViewModel.load()
+                }
         }
     }
 }
