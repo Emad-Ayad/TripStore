@@ -8,8 +8,14 @@ struct AppTabView: View {
             CatalogueView(repository: container.productRepository)
                 .tabItem { Label("Catalogue", systemImage: "magnifyingglass") }
             
+            CartView()
+                .tabItem { Label("Cart", systemImage: "cart.fill") }
+            
             FavouritesView()
                 .tabItem { Label("Favourites", systemImage: "heart.fill") }
+            
+            OrderHistoryView()
+                .tabItem { Label("History", systemImage: "clock.fill") }
         }
     }
 }
